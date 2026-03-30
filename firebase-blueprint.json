@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and metadata.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique user ID from Firebase Auth." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "photoURL": { "type": "string", "format": "uri", "description": "The user's profile photo URL." },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "The user's role (admin or user)." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the user was created." },
+        "bookmarks": { "type": "array", "items": { "type": "string" }, "description": "Array of video IDs the user has bookmarked." },
+        "watchHistory": { "type": "array", "items": { "type": "object", "properties": { "videoId": { "type": "string" }, "timestamp": { "type": "string", "format": "date-time" } } }, "description": "Array of video IDs and timestamps the user has watched." }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "Video": {
+      "title": "Video",
+      "description": "Video tutorial metadata.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique video ID." },
+        "title": { "type": "string", "description": "The title of the video." },
+        "description": { "type": "string", "description": "The description of the video." },
+        "url": { "type": "string", "format": "uri", "description": "The URL of the video file." },
+        "thumbnail": { "type": "string", "format": "uri", "description": "The URL of the video thumbnail." },
+        "category": { "type": "string", "description": "The category of the video." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Array of tags for the video." },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"], "description": "The approval status of the video." },
+        "uploaderUid": { "type": "string", "description": "The UID of the user who uploaded the video." },
+        "uploaderName": { "type": "string", "description": "The name of the user who uploaded the video." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the video was uploaded." },
+        "likesCount": { "type": "integer", "description": "Number of likes the video has received." },
+        "commentsCount": { "type": "integer", "description": "Number of comments the video has received." }
+      },
+      "required": ["id", "title", "url", "status", "uploaderUid", "createdAt"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "A comment on a video.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique comment ID." },
+        "videoId": { "type": "string", "description": "The ID of the video the comment is on." },
+        "userUid": { "type": "string", "description": "The UID of the user who made the comment." },
+        "userName": { "type": "string", "description": "The name of the user who made the comment." },
+        "userPhoto": { "type": "string", "format": "uri", "description": "The photo URL of the user who made the comment." },
+        "text": { "type": "string", "description": "The text of the comment." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the comment was made." }
+      },
+      "required": ["id", "videoId", "userUid", "text", "createdAt"]
+    },
+    "Like": {
+      "title": "Like",
+      "description": "A like on a video.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique like ID (userId_videoId)." },
+        "userId": { "type": "string", "description": "The UID of the user who liked the video." },
+        "videoId": { "type": "string", "description": "The ID of the video that was liked." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the like was created." }
+      },
+      "required": ["id", "userId", "videoId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles." },
+    "/videos/{videoId}": { "schema": "Video", "description": "Video tutorials." },
+    "/videos/{videoId}/comments/{commentId}": { "schema": "Comment", "description": "Comments on a video." },
+    "/likes/{likeId}": { "schema": "Like", "description": "Likes on videos." }
+  }
+}
