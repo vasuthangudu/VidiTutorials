@@ -132,8 +132,8 @@ const EditVideo: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-4">
-        <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
-        <p className="text-gray-500 font-medium">Loading video details...</p>
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-text-muted font-bold">Loading tutorial details...</p>
       </div>
     );
   }
@@ -142,10 +142,10 @@ const EditVideo: React.FC = () => {
     return (
       <div className="max-w-2xl mx-auto py-20 text-center space-y-6">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto" />
-        <h2 className="text-2xl font-bold text-gray-900">{error}</h2>
+        <h2 className="text-2xl font-black text-text tracking-tight">{error}</h2>
         <button
           onClick={() => navigate(-1)}
-          className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all"
+          className="bg-primary text-white px-10 py-4 rounded-2xl font-black hover:bg-primary-dark transition-all shadow-xl shadow-primary/20"
         >
           Go Back
         </button>
@@ -157,7 +157,7 @@ const EditVideo: React.FC = () => {
     <div className="max-w-4xl mx-auto">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 font-bold mb-6 transition-colors"
+        className="flex items-center gap-2 text-text-muted hover:text-text font-black text-sm uppercase tracking-widest mb-8 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Dashboard
@@ -166,33 +166,33 @@ const EditVideo: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100"
+        className="bg-surface p-10 rounded-[2.5rem] shadow-xl border border-gray-100"
       >
-        <div className="flex items-center gap-4 mb-10">
-          <div className="bg-indigo-100 p-4 rounded-2xl">
-            <FileVideo className="w-8 h-8 text-indigo-600" />
+        <div className="flex items-center gap-5 mb-12">
+          <div className="bg-primary/10 p-5 rounded-[1.5rem]">
+            <FileVideo className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Edit Tutorial</h1>
-            <p className="text-gray-500 font-medium">Update the details of your tutorial.</p>
+            <h1 className="text-3xl font-black text-text tracking-tighter">Edit Tutorial</h1>
+            <p className="text-text-muted font-bold">Update the details of your tutorial.</p>
           </div>
         </div>
 
         {success ? (
           <div className="flex flex-col items-center justify-center py-20 gap-6 text-center">
-            <div className="bg-green-100 p-6 rounded-full">
-              <CheckCircle className="w-16 h-16 text-green-600" />
+            <div className="bg-green-50 p-8 rounded-full">
+              <CheckCircle className="w-16 h-16 text-green-500" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">Update Successful!</h2>
-            <p className="text-gray-500 max-w-md">Your changes have been saved. Redirecting you back...</p>
+            <h2 className="text-3xl font-black text-text tracking-tight">Update Successful!</h2>
+            <p className="text-text-muted max-w-md font-medium">Your changes have been saved. Redirecting you back...</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                    <FileVideo className="w-4 h-4 text-indigo-500" />
+                  <label className="flex items-center gap-2 text-xs font-black text-text-muted uppercase tracking-widest mb-3">
+                    <FileVideo className="w-4 h-4 text-primary" />
                     Tutorial Title
                   </label>
                   <input
@@ -201,20 +201,20 @@ const EditVideo: React.FC = () => {
                     required
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full p-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                    <LayoutGrid className="w-4 h-4 text-indigo-500" />
+                  <label className="flex items-center gap-2 text-xs font-black text-text-muted uppercase tracking-widest mb-3">
+                    <LayoutGrid className="w-4 h-4 text-primary" />
                     Category
                   </label>
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer"
+                    className="w-full p-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer font-medium"
                   >
                     {CATEGORIES.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -223,8 +223,8 @@ const EditVideo: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                    <Tag className="w-4 h-4 text-indigo-500" />
+                  <label className="flex items-center gap-2 text-xs font-black text-text-muted uppercase tracking-widest mb-3">
+                    <Tag className="w-4 h-4 text-primary" />
                     Tags (comma separated)
                   </label>
                   <input
@@ -232,15 +232,15 @@ const EditVideo: React.FC = () => {
                     name="tags"
                     value={formData.tags}
                     onChange={handleChange}
-                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full p-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                   />
                 </div>
               </div>
 
               <div className="space-y-6">
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                    <Upload className="w-4 h-4 text-indigo-500" />
+                  <label className="flex items-center gap-2 text-xs font-black text-text-muted uppercase tracking-widest mb-3">
+                    <Upload className="w-4 h-4 text-primary" />
                     Video URL (MP4)
                   </label>
                   <input
@@ -249,13 +249,13 @@ const EditVideo: React.FC = () => {
                     required
                     value={formData.url}
                     onChange={handleChange}
-                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full p-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                    <ImageIcon className="w-4 h-4 text-indigo-500" />
+                  <label className="flex items-center gap-2 text-xs font-black text-text-muted uppercase tracking-widest mb-3">
+                    <ImageIcon className="w-4 h-4 text-primary" />
                     Thumbnail URL (Image)
                   </label>
                   <input
@@ -263,12 +263,12 @@ const EditVideo: React.FC = () => {
                     name="thumbnail"
                     value={formData.thumbnail}
                     onChange={handleChange}
-                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full p-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                  <label className="flex items-center gap-2 text-xs font-black text-text-muted uppercase tracking-widest mb-3">
                     Description
                   </label>
                   <textarea
@@ -276,12 +276,12 @@ const EditVideo: React.FC = () => {
                     rows={4}
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
+                    className="w-full p-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none font-medium"
                   />
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-gray-100">
-                  <h3 className="text-sm font-bold text-gray-900">Additional Qualities (Optional)</h3>
+                <div className="space-y-4 pt-6 border-t border-gray-50">
+                  <h3 className="text-xs font-black text-text uppercase tracking-widest">Additional Qualities (Optional)</h3>
                   <div className="grid grid-cols-1 gap-4">
                     <input
                       type="url"
@@ -289,7 +289,7 @@ const EditVideo: React.FC = () => {
                       value={formData.q1080}
                       onChange={handleChange}
                       placeholder="1080p URL"
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="w-full p-3.5 bg-bg border border-gray-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                     />
                     <input
                       type="url"
@@ -297,7 +297,7 @@ const EditVideo: React.FC = () => {
                       value={formData.q720}
                       onChange={handleChange}
                       placeholder="720p URL"
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="w-full p-3.5 bg-bg border border-gray-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                     />
                     <input
                       type="url"
@@ -305,7 +305,7 @@ const EditVideo: React.FC = () => {
                       value={formData.q360}
                       onChange={handleChange}
                       placeholder="360p URL"
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="w-full p-3.5 bg-bg border border-gray-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -323,7 +323,7 @@ const EditVideo: React.FC = () => {
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-3"
+                className="w-full bg-primary text-white py-5 rounded-2xl font-black text-lg hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
               >
                 {saving ? (
                   <>

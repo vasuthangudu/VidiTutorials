@@ -88,8 +88,8 @@ const UserDashboard: React.FC = () => {
   if (authLoading || loading) {
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-4">
-        <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
-        <p className="text-gray-500 font-medium">Loading your profile...</p>
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-text-muted font-bold">Loading your profile...</p>
       </div>
     );
   }
@@ -143,7 +143,7 @@ const UserDashboard: React.FC = () => {
       </AnimatePresence>
 
       {/* Profile Header */}
-      <div className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100 relative overflow-hidden">
+      <div className="bg-surface p-10 rounded-[2.5rem] shadow-xl border border-gray-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-10 opacity-5">
           <User className="w-64 h-64" />
         </div>
@@ -151,39 +151,39 @@ const UserDashboard: React.FC = () => {
           <img
             src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`}
             alt={user.displayName || 'User'}
-            className="w-32 h-32 rounded-3xl object-cover shadow-2xl ring-4 ring-indigo-50"
+            className="w-32 h-32 rounded-[2rem] object-cover shadow-2xl ring-4 ring-primary/10"
             referrerPolicy="no-referrer"
           />
-          <div className="text-center md:text-left space-y-4">
+          <div className="text-center md:text-left space-y-6">
             <div>
-              <h1 className="text-4xl font-black text-gray-900 mb-2">{user.displayName}</h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm font-medium text-gray-500">
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-indigo-500" />
+              <h1 className="text-4xl font-black text-text tracking-tighter mb-3">{user.displayName}</h1>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-[10px] font-black uppercase tracking-widest text-text-muted">
+                <div className="flex items-center gap-2 bg-bg px-4 py-2 rounded-xl border border-gray-100">
+                  <Mail className="w-4 h-4 text-primary" />
                   <span>{user.email}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-indigo-500" />
+                <div className="flex items-center gap-2 bg-bg px-4 py-2 rounded-xl border border-gray-100">
+                  <Shield className="w-4 h-4 text-primary" />
                   <span className="capitalize">{profile.role}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-indigo-500" />
+                <div className="flex items-center gap-2 bg-bg px-4 py-2 rounded-xl border border-gray-100">
+                  <Clock className="w-4 h-4 text-primary" />
                   <span>Joined {profile.createdAt?.toDate ? formatDistanceToNow(profile.createdAt.toDate(), { addSuffix: true }) : 'recently'}</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4 pt-2">
-              <div className="bg-indigo-50 px-4 py-2 rounded-xl text-center border border-indigo-100">
-                <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-0.5">Bookmarks</p>
-                <p className="text-xl font-black text-indigo-700">{profile.bookmarks?.length || 0}</p>
+              <div className="bg-bg px-6 py-3 rounded-2xl text-center border border-gray-100 min-w-[100px]">
+                <p className="text-[10px] text-text-muted font-black uppercase tracking-widest mb-1">Bookmarks</p>
+                <p className="text-2xl font-black text-primary">{profile.bookmarks?.length || 0}</p>
               </div>
-              <div className="bg-indigo-50 px-4 py-2 rounded-xl text-center border border-indigo-100">
-                <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-0.5">Watch History</p>
-                <p className="text-xl font-black text-indigo-700">{profile.watchHistory?.length || 0}</p>
+              <div className="bg-bg px-6 py-3 rounded-2xl text-center border border-gray-100 min-w-[100px]">
+                <p className="text-[10px] text-text-muted font-black uppercase tracking-widest mb-1">History</p>
+                <p className="text-2xl font-black text-primary">{profile.watchHistory?.length || 0}</p>
               </div>
-              <div className="bg-indigo-50 px-4 py-2 rounded-xl text-center border border-indigo-100">
-                <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-0.5">My Uploads</p>
-                <p className="text-xl font-black text-indigo-700">{myUploads.length}</p>
+              <div className="bg-bg px-6 py-3 rounded-2xl text-center border border-gray-100 min-w-[100px]">
+                <p className="text-[10px] text-text-muted font-black uppercase tracking-widest mb-1">Uploads</p>
+                <p className="text-2xl font-black text-primary">{myUploads.length}</p>
               </div>
             </div>
           </div>
@@ -191,12 +191,12 @@ const UserDashboard: React.FC = () => {
       </div>
 
       {/* Content Tabs */}
-      <div className="space-y-8">
-        <div className="flex items-center gap-4 border-b border-gray-200">
+      <div className="space-y-10">
+        <div className="flex items-center gap-8 border-b border-gray-100">
           <button
             onClick={() => setActiveTab('bookmarks')}
-            className={`px-6 py-4 text-sm font-bold transition-all border-b-2 flex items-center gap-2 ${
-              activeTab === 'bookmarks' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'
+            className={`px-4 py-5 text-sm font-black uppercase tracking-widest transition-all border-b-4 flex items-center gap-2 ${
+              activeTab === 'bookmarks' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text'
             }`}
           >
             <Bookmark className="w-4 h-4" />
@@ -204,8 +204,8 @@ const UserDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('history')}
-            className={`px-6 py-4 text-sm font-bold transition-all border-b-2 flex items-center gap-2 ${
-              activeTab === 'history' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'
+            className={`px-4 py-5 text-sm font-black uppercase tracking-widest transition-all border-b-4 flex items-center gap-2 ${
+              activeTab === 'history' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text'
             }`}
           >
             <History className="w-4 h-4" />
@@ -213,8 +213,8 @@ const UserDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('uploads')}
-            className={`px-6 py-4 text-sm font-bold transition-all border-b-2 flex items-center gap-2 ${
-              activeTab === 'uploads' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'
+            className={`px-4 py-5 text-sm font-black uppercase tracking-widest transition-all border-b-4 flex items-center gap-2 ${
+              activeTab === 'uploads' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text'
             }`}
           >
             <Upload className="w-4 h-4" />

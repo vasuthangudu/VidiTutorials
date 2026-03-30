@@ -47,13 +47,27 @@ const Login: React.FC = () => {
   }, []);
 
   const setupRecaptcha = () => {
-    if (!recaptchaVerifier.current && recaptchaRef.current) {
-      recaptchaVerifier.current = new RecaptchaVerifier(auth, recaptchaRef.current, {
-        size: 'invisible',
-        callback: () => {
-          console.log('Recaptcha resolved');
-        }
-      });
+    // Clear existing verifier if it exists to prevent "element removed" errors
+    if (recaptchaVerifier.current) {
+      try {
+        recaptchaVerifier.current.clear();
+      } catch (e) {
+        console.warn('Error clearing existing reCAPTCHA:', e);
+      }
+      recaptchaVerifier.current = null;
+    }
+
+    if (recaptchaRef.current) {
+      try {
+        recaptchaVerifier.current = new RecaptchaVerifier(auth, recaptchaRef.current, {
+          size: 'invisible',
+          callback: () => {
+            console.log('reCAPTCHA resolved');
+          }
+        });
+      } catch (err) {
+        console.error('reCAPTCHA initialization failed:', err);
+      }
     }
   };
 
@@ -116,11 +130,22 @@ const Login: React.FC = () => {
       setupRecaptcha();
       if (!recaptchaVerifier.current) throw new Error('Recaptcha not initialized');
       
-      const result = await signInWithPhoneNumber(auth, phone, recaptchaVerifier.current);
+      // Ensure phone has country code for Firebase OTP
+      let formattedPhone = phone.trim();
+      if (!formattedPhone.startsWith('+')) {
+        formattedPhone = '+91' + formattedPhone; // Default to India if no country code
+      }
+      
+      const result = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier.current);
       setConfirmationResult(result);
       setView('verify-otp');
     } catch (err: any) {
-      setError(err.message);
+      console.error('OTP Error:', err);
+      if (err.code === 'auth/operation-not-allowed') {
+        setError('Phone authentication is not enabled in Firebase Console. Please go to Build > Authentication > Sign-in method and enable "Phone".');
+      } else {
+        setError(err.message || 'Failed to send verification code. Please check the phone number format.');
+      }
     } finally {
       setLoading(false);
     }
@@ -161,14 +186,14 @@ const Login: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-lg border border-gray-100"
+        className="bg-surface p-8 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-lg border border-gray-100"
       >
         <div className="text-center mb-10">
-          <div className="inline-flex bg-indigo-100 p-4 rounded-2xl mb-6">
-            <Video className="w-10 h-10 text-indigo-600" />
+          <div className="inline-flex bg-primary/10 p-4 rounded-2xl mb-6">
+            <Video className="w-10 h-10 text-primary" />
           </div>
-          <h1 className="text-3xl font-black text-gray-900 mb-2">VidiTutorials</h1>
-          <p className="text-gray-500 font-medium">
+          <h1 className="text-3xl font-black text-text mb-2 tracking-tighter">VidiTutorials</h1>
+          <p className="text-text-muted font-medium">
             {view === 'login' ? 'Welcome back! Please login.' : 
              view === 'register' ? 'Join our community today.' : 
              view === 'forgot-password' ? 'Reset your access.' : 'Verify your phone.'}
@@ -177,22 +202,22 @@ const Login: React.FC = () => {
 
         {/* Auth Mode Tabs */}
         {view !== 'verify-otp' && (
-          <div className="flex bg-gray-50 p-1.5 rounded-2xl mb-8">
+          <div className="flex bg-bg p-1.5 rounded-2xl mb-8">
             <button
               onClick={() => { setMode('google'); setView('login'); }}
-              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === 'google' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === 'google' ? 'bg-surface text-primary shadow-sm' : 'text-text-muted/50 hover:text-text-muted'}`}
             >
               Google
             </button>
             <button
               onClick={() => { setMode('phone-password'); setView('login'); }}
-              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === 'phone-password' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === 'phone-password' ? 'bg-surface text-primary shadow-sm' : 'text-text-muted/50 hover:text-text-muted'}`}
             >
               Phone + Pass
             </button>
             <button
               onClick={() => { setMode('phone-otp'); setView('login'); }}
-              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === 'phone-otp' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === 'phone-otp' ? 'bg-surface text-primary shadow-sm' : 'text-text-muted/50 hover:text-text-muted'}`}
             >
               Phone OTP
             </button>
@@ -202,7 +227,7 @@ const Login: React.FC = () => {
         {error && (
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-red-50 text-red-600 p-4 rounded-2xl mb-8 text-sm flex items-center gap-3 border border-red-100">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <span>{error}</span>
+            <span className="font-medium">{error}</span>
           </motion.div>
         )}
 
@@ -212,9 +237,9 @@ const Login: React.FC = () => {
               <button
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-4 bg-white border border-gray-200 text-gray-700 px-8 py-4 rounded-2xl font-bold hover:bg-gray-50 transition-all shadow-sm hover:shadow-md disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-4 bg-surface border border-gray-100 text-text px-8 py-4 rounded-2xl font-bold hover:bg-bg transition-all shadow-sm hover:shadow-md disabled:opacity-50"
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />}
+                {loading ? <Loader2 className="w-6 h-6 animate-spin text-primary" /> : <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />}
                 <span>Continue with Google</span>
               </button>
             </motion.div>
@@ -222,66 +247,106 @@ const Login: React.FC = () => {
 
           {mode === 'phone-password' && (
             <motion.div key="phone-password" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <form onSubmit={view === 'login' ? handlePhonePasswordLogin : handlePhonePasswordRegister} className="space-y-6">
-                <div className="space-y-4">
+              {view === 'forgot-password' ? (
+                <form onSubmit={handleSendOtp} className="space-y-6">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Phone className="h-5 w-5 text-gray-400" />
+                      <Phone className="h-5 w-5 text-text-muted/50" />
                     </div>
                     <input
                       type="tel"
                       required
-                      placeholder="Phone Number (e.g. +1234567890)"
+                      placeholder="Phone Number (e.g. +91...)"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="block w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="block w-full pl-12 pr-4 py-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                     />
                   </div>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="password"
-                      required
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                    />
-                  </div>
-                </div>
-
-                {view === 'login' && (
-                  <div className="text-right">
-                    <button 
-                      type="button"
-                      onClick={() => { setMode('phone-otp'); setView('login'); }}
-                      className="text-xs font-bold text-indigo-600 hover:underline"
-                    >
-                      Forgot Password? Use Phone OTP
-                    </button>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-3"
-                >
-                  {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : (view === 'login' ? 'Login' : 'Create Account')}
-                </button>
-
-                <div className="text-center">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
+                  >
+                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Send Reset Code'}
+                  </button>
+                  <div id="recaptcha-container-forgot" ref={recaptchaRef} className="mt-2"></div>
                   <button
                     type="button"
-                    onClick={() => setView(view === 'login' ? 'register' : 'login')}
-                    className="text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors"
+                    onClick={() => setView('login')}
+                    className="w-full text-sm font-bold text-text-muted hover:text-primary transition-colors"
                   >
-                    {view === 'login' ? "Don't have an account? Register" : "Already have an account? Login"}
+                    Back to Login
                   </button>
-                </div>
-              </form>
+                </form>
+              ) : (
+                <form onSubmit={view === 'login' ? handlePhonePasswordLogin : handlePhonePasswordRegister} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Phone className="h-5 w-5 text-text-muted/50" />
+                      </div>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="Phone Number (e.g. +91...)"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="block w-full pl-12 pr-4 py-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                      />
+                    </div>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Lock className="h-5 w-5 text-text-muted/50" />
+                      </div>
+                      <input
+                        type="password"
+                        required
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="block w-full pl-12 pr-4 py-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                      />
+                    </div>
+                  </div>
+
+                  {view === 'login' && (
+                    <div className="flex items-center justify-between">
+                      <button 
+                        type="button"
+                        onClick={() => { setMode('phone-otp'); setView('login'); }}
+                        className="text-xs font-bold text-primary hover:underline"
+                      >
+                        Login with Phone OTP
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setView('forgot-password')}
+                        className="text-xs font-bold text-primary hover:underline"
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
+                  >
+                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : (view === 'login' ? 'Login' : 'Create Account')}
+                  </button>
+
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      onClick={() => setView(view === 'login' ? 'register' : 'login')}
+                      className="text-sm font-bold text-text-muted hover:text-primary transition-colors"
+                    >
+                      {view === 'login' ? "Don't have an account? Register" : "Already have an account? Login"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </motion.div>
           )}
 
@@ -291,7 +356,7 @@ const Login: React.FC = () => {
                 <form onSubmit={handleVerifyOtp} className="space-y-6">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Smartphone className="h-5 w-5 text-gray-400" />
+                      <Smartphone className="h-5 w-5 text-text-muted/50" />
                     </div>
                     <input
                       type="text"
@@ -299,20 +364,20 @@ const Login: React.FC = () => {
                       placeholder="6-digit Verification Code"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      className="block w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="block w-full pl-12 pr-4 py-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-3"
+                    className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
                   >
                     {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Verify & Continue'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setView('login')}
-                    className="w-full text-sm font-medium text-gray-500 hover:text-indigo-600"
+                    className="w-full text-sm font-bold text-text-muted hover:text-primary transition-colors"
                   >
                     Change Phone Number
                   </button>
@@ -321,25 +386,25 @@ const Login: React.FC = () => {
                 <form onSubmit={handleSendOtp} className="space-y-6">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Phone className="h-5 w-5 text-gray-400" />
+                      <Phone className="h-5 w-5 text-text-muted/50" />
                     </div>
                     <input
                       type="tel"
                       required
-                      placeholder="Phone Number (e.g. +1234567890)"
+                      placeholder="Phone Number (e.g. +91...)"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="block w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="block w-full pl-12 pr-4 py-4 bg-bg border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-3"
+                    className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
                   >
                     {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Send Verification Code'}
                   </button>
-                  <div id="recaptcha-container" ref={recaptchaRef}></div>
+                  <div id="recaptcha-container-login" ref={recaptchaRef} className="mt-2"></div>
                 </form>
               )}
             </motion.div>
@@ -347,7 +412,7 @@ const Login: React.FC = () => {
         </AnimatePresence>
 
         <div className="mt-12 pt-8 border-t border-gray-50 text-center">
-          <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">
+          <p className="text-[10px] text-text-muted/40 uppercase tracking-[0.2em] font-black">
             Secure Authentication powered by Firebase
           </p>
         </div>

@@ -94,8 +94,8 @@ const AdminDashboard: React.FC = () => {
   if (authLoading || loading) {
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-4">
-        <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
-        <p className="text-gray-500 font-medium">Loading admin panel...</p>
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-text-muted font-bold">Loading admin panel...</p>
       </div>
     );
   }
@@ -149,41 +149,41 @@ const AdminDashboard: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <div className="bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="bg-indigo-100 p-4 rounded-2xl">
-            <ShieldCheck className="w-8 h-8 text-indigo-600" />
+      <div className="bg-surface p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
+        <div className="flex items-center gap-5 mb-12">
+          <div className="bg-primary/10 p-5 rounded-[1.5rem]">
+            <ShieldCheck className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="text-gray-500 font-medium">Manage video approvals and user content.</p>
+            <h1 className="text-3xl font-black text-text tracking-tighter">Admin Dashboard</h1>
+            <p className="text-text-muted font-bold">Manage video approvals and user content.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100">
-            <p className="text-amber-600 text-sm font-bold uppercase tracking-wider mb-1">Pending Review</p>
+            <p className="text-amber-600 text-[10px] font-black uppercase tracking-widest mb-1">Pending Review</p>
             <p className="text-4xl font-black text-amber-700">{pendingVideos.length}</p>
           </div>
           <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
-            <p className="text-green-600 text-sm font-bold uppercase tracking-wider mb-1">Approved</p>
+            <p className="text-green-600 text-[10px] font-black uppercase tracking-widest mb-1">Approved</p>
             <p className="text-4xl font-black text-green-700">{videos.filter(v => v.status === 'approved').length}</p>
           </div>
           <div className="bg-red-50 p-6 rounded-2xl border border-red-100">
-            <p className="text-red-600 text-sm font-bold uppercase tracking-wider mb-1">Rejected</p>
+            <p className="text-red-600 text-[10px] font-black uppercase tracking-widest mb-1">Rejected</p>
             <p className="text-4xl font-black text-red-700">{videos.filter(v => v.status === 'rejected').length}</p>
           </div>
-          <div className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
-            <p className="text-indigo-600 text-sm font-bold uppercase tracking-wider mb-1">Total Users</p>
-            <p className="text-4xl font-black text-indigo-700">{users.length}</p>
+          <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+            <p className="text-primary text-[10px] font-black uppercase tracking-widest mb-1">Total Users</p>
+            <p className="text-4xl font-black text-primary">{users.length}</p>
           </div>
         </div>
 
-        <div className="flex gap-4 mb-8 border-b border-gray-100 pb-4">
+        <div className="flex gap-4 mb-8 border-b border-gray-100 pb-6">
           <button
             onClick={() => setActiveTab('videos')}
-            className={`px-6 py-2 rounded-xl font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'videos' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-gray-500 hover:bg-gray-50'
+            className={`px-8 py-3 rounded-2xl font-black text-sm transition-all flex items-center gap-2 ${
+              activeTab === 'videos' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-text-muted hover:bg-bg'
             }`}
           >
             <ShieldCheck className="w-5 h-5" />
@@ -191,8 +191,8 @@ const AdminDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('users')}
-            className={`px-6 py-2 rounded-xl font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'users' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-gray-500 hover:bg-gray-50'
+            className={`px-8 py-3 rounded-2xl font-black text-sm transition-all flex items-center gap-2 ${
+              activeTab === 'users' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-text-muted hover:bg-bg'
             }`}
           >
             <Users className="w-5 h-5" />
@@ -201,7 +201,7 @@ const AdminDashboard: React.FC = () => {
           <div className="flex-1" />
           <button
             onClick={() => navigate('/upload')}
-            className="px-6 py-2 bg-indigo-100 text-indigo-600 rounded-xl font-bold hover:bg-indigo-200 transition-all flex items-center gap-2"
+            className="px-8 py-3 bg-primary/10 text-primary rounded-2xl font-black text-sm hover:bg-primary/20 transition-all flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
             Add New Video
@@ -210,12 +210,12 @@ const AdminDashboard: React.FC = () => {
 
         {activeTab === 'videos' ? (
           <>
-            <section className="space-y-6">
+            <section className="space-y-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-500" />
-              Pending Approvals
-            </h2>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-amber-500 rounded-full"></div>
+              <h2 className="text-2xl font-black text-text tracking-tight">Pending Approvals</h2>
+            </div>
             <div className="flex items-center gap-4">
               <AnimatePresence>
                 {bulkSuccess && (
@@ -223,7 +223,7 @@ const AdminDashboard: React.FC = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2"
+                    className="bg-green-50 text-green-700 px-6 py-3 rounded-2xl text-sm font-black flex items-center gap-2"
                   >
                     <CheckCircle className="w-4 h-4" />
                     Approved 5 Videos!
@@ -233,7 +233,7 @@ const AdminDashboard: React.FC = () => {
               {pendingVideos.length > 0 && (
                 <button
                   onClick={handleBulkApprove}
-                  className="bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-green-700 transition-all flex items-center gap-2 shadow-lg shadow-green-100"
+                  className="bg-green-600 text-white px-6 py-3 rounded-2xl text-sm font-black hover:bg-green-700 transition-all flex items-center gap-2 shadow-xl shadow-green-100"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Approve 5 Videos
@@ -242,12 +242,12 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
           {pendingVideos.length > 0 ? (
-            <div className="overflow-hidden bg-white border border-gray-100 rounded-2xl">
+            <div className="overflow-hidden bg-bg border border-gray-100 rounded-[2rem]">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
+                <thead className="bg-surface text-text-muted text-[10px] font-black uppercase tracking-widest">
                   <tr>
-                    <th className="px-6 py-4">Video</th>
-                    <th className="px-6 py-4">Uploader</th>
+                    <th className="px-8 py-5">Video</th>
+                    <th className="px-8 py-5">Uploader</th>
                     <th className="px-6 py-4">Category</th>
                     <th className="px-6 py-4">Date</th>
                     <th className="px-6 py-4 text-right">Actions</th>

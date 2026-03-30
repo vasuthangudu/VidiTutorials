@@ -25,10 +25,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ selectedCategory, onSelectCategor
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => onSelectCategory(null)}
-        className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap shadow-sm border ${
+        className={`px-6 py-2.5 rounded-full text-sm font-black transition-all whitespace-nowrap shadow-sm border ${
           selectedCategory === null
-            ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-200'
-            : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'
+            ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+            : 'bg-surface text-text-muted border-gray-100 hover:border-primary/30 hover:text-primary'
         }`}
       >
         All Tutorials
@@ -39,10 +39,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ selectedCategory, onSelectCategor
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => onSelectCategory(category)}
-          className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap shadow-sm border ${
+          className={`px-6 py-2.5 rounded-full text-sm font-black transition-all whitespace-nowrap shadow-sm border ${
             selectedCategory === category
-              ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-200'
-              : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'
+              ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+              : 'bg-surface text-text-muted border-gray-100 hover:border-primary/30 hover:text-primary'
           }`}
         >
           {category}
